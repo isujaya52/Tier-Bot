@@ -1,3 +1,4 @@
+import asyncio
 from telebot.async_telebot import AsyncTeleBot
 import os
 
