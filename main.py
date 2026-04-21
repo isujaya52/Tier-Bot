@@ -72,7 +72,7 @@ def keep_alive():
         except Exception as e:
             print(f"[keep-alive] log error: {e}")
         
-        time.sleep(240)
+        time.sleep(600)
 
 async def runall():
     global main_loop
