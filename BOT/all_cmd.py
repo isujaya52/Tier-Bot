@@ -6,7 +6,7 @@ import importlib
 
 season_module = importlib.import_module("BOT.seasonV")
 
-FILE = 'BOT/JSON/data.json'
+FILE = '/app/BOT/JSON/data.json'
 BACKUP = 'BOT/JSON/backup.json'
 
 
