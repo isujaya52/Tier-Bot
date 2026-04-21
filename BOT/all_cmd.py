@@ -12,6 +12,13 @@ BACKUP = 'BOT/JSON/backup.json'
 
 async def read():
     try:
+        folder_path = os.path.dirname(FILE)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path, exist_ok=True)
+        if not os.path.exists(FILE):
+            with open(FILE, 'w') as f:
+                json.dump({}, f)
+            return {}
         with open(FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         with open(BACKUP, 'w', encoding='utf-8') as f:
