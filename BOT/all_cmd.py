@@ -4,7 +4,7 @@ from BOT.decorators import admins_only, bot_admin
 import asyncio
 import importlib
 import os
-import request
+import requests
 
 season_module = importlib.import_module("BOT.seasonV")
 
