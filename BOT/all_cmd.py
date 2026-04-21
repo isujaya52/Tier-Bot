@@ -80,19 +80,16 @@ def ping():
         except Exception as e:
             print(f"[keep-alive] self error: {e}")
 
-        try:
-            if main_loop:
-                # 2. Sisipkan Uptime ke dalam pesan log Telegram
-                uptime_now = get_readable_uptime()
-                msg = (
-                    f"🟢 <b>BOT AKTIF</b>\n\n"
-                    f"⏱️ <b>Uptime:</b> <code>{uptime_now}</code>\n"
-                    f"🌐 Ping Google: {google_status}\n"
-                    f"🖥️ Ping Self: {self_status}"
-                )
-                await bot.send_message(LOGS_ID, msg, parse_mode='HTML')
-        except Exception as e:
-            print(f"[keep-alive] log error: {e}")
+        # 2. Sisipkan Uptime ke dalam pesan log Telegram
+        uptime_now = get_readable_uptime()
+        msg = (
+            f"🟢 <b>BOT AKTIF</b>\n\n"
+            f"⏱️ <b>Uptime:</b> <code>{uptime_now}</code>\n"
+            f"🌐 Ping Google: {google_status}\n"
+            f"🖥️ Ping Self: {self_status}"
+        )
+        await bot.send_message(LOGS_ID, msg, parse_mode='HTML')
+        
 
 
 @bot.message_handler(commands=['start', 'help'])
