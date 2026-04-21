@@ -4,6 +4,7 @@ from BOT.decorators import admins_only, bot_admin
 import asyncio
 import importlib
 import os
+import request
 
 season_module = importlib.import_module("BOT.seasonV")
 
@@ -89,10 +90,7 @@ def ping():
                     f"🌐 Ping Google: {google_status}\n"
                     f"🖥️ Ping Self: {self_status}"
                 )
-                asyncio.run_coroutine_threadsafe(
-                    bot.send_message(LOGS_ID, msg, parse_mode='HTML'),
-                    main_loop
-                )
+                await bot.send_message(LOGS_ID, msg, parse_mode='HTML')
         except Exception as e:
             print(f"[keep-alive] log error: {e}")
 
