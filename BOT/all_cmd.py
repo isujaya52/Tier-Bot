@@ -45,7 +45,21 @@ async def save(data):
     with open(FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-#DEF PING#
+# DEF PING
+# Fungsi pembantu untuk mengubah detik menjadi format teks (Hari, Jam, Menit, Detik)
+def get_readable_uptime():
+    uptime_seconds = int(time.time() - START_TIME)
+    days, rem = divmod(uptime_seconds, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes, seconds = divmod(rem, 60)
+    
+    parts = []
+    if days > 0: parts.append(f"{days}d")
+    if hours > 0: parts.append(f"{hours}h")
+    if minutes > 0: parts.append(f"{minutes}m")
+    parts.append(f"{seconds}s")
+    return " ".join(parts)
+
 def ping():
     google_url = "https://www.google.com/search?q=Google.com"
     own_url = f"https://{os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')}/"
@@ -276,3 +290,9 @@ async def cek_tier(point):
             star = (point - min_point) // 50
             return tier_name, star
     return "Mythic Immortal", (point - 10600) // 50
+
+@bot.message_handler(commands=['ping'])
+async def pingg():
+    ping()
+
+
