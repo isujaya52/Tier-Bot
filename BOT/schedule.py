@@ -7,7 +7,7 @@ from pytz import timezone
 from BOT.all_cmd import cek_tier
 from BOT.seasonV import __season__ as season
 
-FILE = 'BOT/JSON/data.json'
+FILE = '/app/BOT/JSON/data.json' 
 SEASON_PATH = 'BOT/seasonV.py'
 
 
