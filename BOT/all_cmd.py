@@ -46,8 +46,8 @@ async def save(data):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 #DEF PING#
-
-google_url = "https://www.google.com/search?q=Google.com"
+def ping():
+    google_url = "https://www.google.com/search?q=Google.com"
     own_url = f"https://{os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')}/"
     
     while True:
@@ -81,8 +81,6 @@ google_url = "https://www.google.com/search?q=Google.com"
                 )
         except Exception as e:
             print(f"[keep-alive] log error: {e}")
-
-
 
 
 @bot.message_handler(commands=['start', 'help'])
