@@ -8,14 +8,14 @@ import os
 season_module = importlib.import_module("BOT.seasonV")
 
 FILE = '/app/BOT/JSON/data.json'
-BACKUP = 'BOT/JSON/backup.json'
+BACKUP = '/app/BOT/JSON/backup.json'
 
 
 async def read():
     try:
-        folder_path = os.path.dirname(FILE)
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path, exist_ok=True)
+        file_path = os.path.dirname(FILE)
+        if not os.path.exists(file_path):
+            os.makedirs(file_path, exist_ok=True)
         if not os.path.exists(FILE):
             with open(FILE, 'w') as f:
                 json.dump({}, f)
@@ -26,6 +26,14 @@ async def read():
             json.dump(data, f, indent=2, ensure_ascii=False)
         return data
     except json.JSONDecodeError:
+        backup_path = os.path.dirname(BACKUP)
+        if not os.path.exists(backup_path):
+            os.makedirs(backup_path, exist_ok=True)
+        if not os.path.exists(BACKUP):
+            with open(BACKUP, 'w') as f:
+                json.dump({}, f)
+            return {}
+        
         with open(BACKUP, 'r', encoding='utf-8') as f:
             data = json.load(f)
         with open(FILE, 'w', encoding='utf-8') as f:
