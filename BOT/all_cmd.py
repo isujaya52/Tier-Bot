@@ -61,7 +61,7 @@ def get_readable_uptime():
     parts.append(f"{seconds}s")
     return " ".join(parts)
 
-def ping():
+async def ping():
     google_url = "https://www.google.com/search?q=Google.com"
     own_url = f"https://{os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')}/"
     
