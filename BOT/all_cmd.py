@@ -45,6 +45,45 @@ async def save(data):
     with open(FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
+#DEF PING#
+
+google_url = "https://www.google.com/search?q=Google.com"
+    own_url = f"https://{os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')}/"
+    
+    while True:
+        google_status = "❌"
+        self_status = "❌"
+        try:
+            r1 = requests.get(google_url, timeout=10)
+            google_status = f"✅ {r1.status_code}"
+        except Exception as e:
+            print(f"[keep-alive] google error: {e}")
+            
+        try:
+            r2 = requests.get(own_url, timeout=10, verify=False)
+            self_status = f"✅ {r2.status_code}"
+        except Exception as e:
+            print(f"[keep-alive] self error: {e}")
+
+        try:
+            if main_loop:
+                # 2. Sisipkan Uptime ke dalam pesan log Telegram
+                uptime_now = get_readable_uptime()
+                msg = (
+                    f"🟢 <b>BOT AKTIF</b>\n\n"
+                    f"⏱️ <b>Uptime:</b> <code>{uptime_now}</code>\n"
+                    f"🌐 Ping Google: {google_status}\n"
+                    f"🖥️ Ping Self: {self_status}"
+                )
+                asyncio.run_coroutine_threadsafe(
+                    bot.send_message(LOGS_ID, msg, parse_mode='HTML'),
+                    main_loop
+                )
+        except Exception as e:
+            print(f"[keep-alive] log error: {e}")
+
+
+
 
 @bot.message_handler(commands=['start', 'help'])
 async def start(m):
