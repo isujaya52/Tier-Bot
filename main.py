@@ -10,8 +10,6 @@ from datetime import datetime
 from BOT.all_cmd import ping
 from BOT.all_cmd import get_readable_uptime
 
-# 1. Tambahkan variabel global untuk mencatat waktu mulai
-START_TIME = time.time()
 
 flask_app = Flask(__name__)
 main_loop = None
