@@ -22,7 +22,7 @@ def flask_msg():
 def run_flask():
     flask_app.run(host="0.0.0.0", port=5000)
 
-async def keep_alive():
+def keep_alive():
     while True:
         try:
             # Karena ini di dalam thread, kita gunakan run_coroutine_threadsafe
