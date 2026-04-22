@@ -28,7 +28,8 @@ async def keep_alive():
             # Karena ini di dalam thread, kita gunakan run_coroutine_threadsafe
             if main_loop:
                 # Ambil pesan dari fungsi check_status
-                msg = asyncio.run_coroutine_threadsafe(await ping(), main_loop).result()
+                piing = ping()
+                msg = asyncio.run_coroutine_threadsafe(piing, main_loop).result()
                 
                 # Kirim ke LOGS_ID
                 asyncio.run_coroutine_threadsafe(
