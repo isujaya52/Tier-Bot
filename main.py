@@ -25,8 +25,21 @@ def run_flask():
     flask_app.run(host="0.0.0.0", port=5000)
 
 def keep_alive():
-    ping()
-    time.sleep(600)
+    while True:
+        try:
+            # Karena ini di dalam thread, kita gunakan run_coroutine_threadsafe
+            if main_loop:
+                # Ambil pesan dari fungsi check_status
+                msg = asyncio.run_coroutine_threadsafe(ping(), main_loop).result()
+                
+                # Kirim ke LOGS_ID
+                asyncio.run_coroutine_threadsafe(
+                    bot.send_message(LOGS_ID, msg, parse_mode='HTML'),
+                    main_loop
+                )
+        except Exception as e:
+            print(f"[keep-alive] loop error: {e}")
+        time.sleep(600)
 
 async def runall():
     global main_loop
