@@ -284,9 +284,9 @@ async def cek_tier(point):
             return tier_name, star
     return "Mythic Immortal", (point - 10600) // 50
 
-@bot.on_message(filters.command("status"))
-async def status_command_handler(client, message):
+@bot.message_handler(command=["status"])
+async def status_command_handler(m):
     status_msg = await ping()
-    await message.reply_text(status_msg, parse_mode='HTML')
+    await bot.reply_to(m,status_msg, parse_mode='HTML')
 
 
