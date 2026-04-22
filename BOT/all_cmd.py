@@ -49,6 +49,7 @@ async def save(data):
 # DEF PING
 # Fungsi pembantu untuk mengubah detik menjadi format teks (Hari, Jam, Menit, Detik)
 def get_readable_uptime():
+    global main_loop
     uptime_seconds = int(time.time() - START_TIME)
     days, rem = divmod(uptime_seconds, 86400)
     hours, rem = divmod(rem, 3600)
@@ -61,7 +62,7 @@ def get_readable_uptime():
     parts.append(f"{seconds}s")
     return " ".join(parts)
 
-async def ping():
+def ping():
     google_url = "https://www.google.com/search?q=Google.com"
     own_url = f"https://{os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')}/"
     
@@ -80,15 +81,23 @@ async def ping():
         except Exception as e:
             print(f"[keep-alive] self error: {e}")
 
-        # 2. Sisipkan Uptime ke dalam pesan log Telegram
-        uptime_now = get_readable_uptime()
-        msg = (
-            f"🟢 <b>BOT AKTIF</b>\n\n"
-            f"⏱️ <b>Uptime:</b> <code>{uptime_now}</code>\n"
-            f"🌐 Ping Google: {google_status}\n"
-            f"🖥️ Ping Self: {self_status}"
-        )
-        await bot.send_message(LOGS_ID, msg, parse_mode='HTML')
+        try:
+            if main_loop:
+                # 2. Sisipkan Uptime ke dalam pesan log Telegram
+                uptime_now = get_readable_uptime()
+                msg = (
+                    f"🟢 <b>BOT AKTIF</b>\n\n"
+                    f"⏱️ <b>Uptime:</b> <code>{uptime_now}</code>\n"
+                    f"🌐 Ping Google: {google_status}\n"
+                    f"🖥️ Ping Self: {self_status}"
+                )
+                asyncio.run_coroutine_threadsafe(
+                    bot.send_message(LOGS_ID, msg, parse_mode='HTML'),
+                    main_loop
+                )
+        except Exception as e:
+            print(f"[keep-alive] log error: {e}")
+        
         
 
 
