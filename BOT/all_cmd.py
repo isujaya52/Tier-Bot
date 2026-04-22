@@ -66,29 +66,28 @@ def get_readable_uptime():
 async def ping():
     google_url = "https://www.google.com/search?q=Google.com"
     own_url = f"https://{os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')}/"
-    
-    while True:
-        google_status = "❌"
-        self_status = "❌"
-        try:
-            r1 = requests.get(google_url, timeout=10)
-            google_status = f"✅ {r1.status_code}"
-        except Exception as e:
-            print(f"[keep-alive] google error: {e}")
-            
-        try:
-            r2 = requests.get(own_url, timeout=10, verify=False)
-            self_status = f"✅ {r2.status_code}"
-        except Exception as e:
-            print(f"[keep-alive] self error: {e}")
-        uptime_now = get_readable_uptime()
-        msg = (
-                    f"🟢 <b>BOT AKTIF</b>\n\n"
-                    f"⏱️ <b>Uptime:</b> <code>{uptime_now}</code>\n"
-                    f"🌐 Ping Google: {google_status}\n"
-                    f"🖥️ Ping Self: {self_status}"
-                )
-        return msg
+
+    google_status = "❌"
+    self_status = "❌"
+    try:
+        r1 = requests.get(google_url, timeout=10)
+        google_status = f"✅ {r1.status_code}"
+    except Exception as e:
+        print(f"[keep-alive] google error: {e}")
+        
+    try:
+        r2 = requests.get(own_url, timeout=10, verify=False)
+        self_status = f"✅ {r2.status_code}"
+    except Exception as e:
+        print(f"[keep-alive] self error: {e}")
+    uptime_now = get_readable_uptime()
+    msg = (
+                f"🟢 <b>BOT AKTIF</b>\n\n"
+                f"⏱️ <b>Uptime:</b> <code>{uptime_now}</code>\n"
+                f"🌐 Ping Google: {google_status}\n"
+                f"🖥️ Ping Self: {self_status}"
+            )
+    return msg
         
 
 
