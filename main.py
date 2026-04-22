@@ -43,7 +43,7 @@ async def runall():
     global main_loop
     main_loop = asyncio.get_event_loop()
     Thread(target=run_flask, daemon=True).start()
-    Thread(target=await keep_alive, daemon=True).start()
+    Thread(target=keep_alive, daemon=True).start()
     
     # ... (sisanya tetap sama seperti kode Anda)
     try:
