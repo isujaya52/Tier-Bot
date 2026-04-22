@@ -63,7 +63,7 @@ def get_readable_uptime():
     parts.append(f"{seconds}s")
     return " ".join(parts)
 
-async def ping():
+def ping():
     google_url = "https://www.google.com/search?q=Google.com"
     own_url = f"https://{os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')}/"
 
@@ -89,6 +89,14 @@ async def ping():
             )
     return msg
         
+@bot.message_handler(commands=['ping'])
+@bot_admin
+@admins_only
+async def status_command_handler(m):
+    status_msg = ping()
+    await bot.reply_to(m,status_msg, parse_mode='HTML')
+
+
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -284,10 +292,4 @@ async def cek_tier(point):
             star = (point - min_point) // 50
             return tier_name, star
     return "Mythic Immortal", (point - 10600) // 50
-
-@bot.message_handler(commands=["ping"])
-async def status_command_handler(m):
-    status_msg = await ping()
-    await bot.reply_to(m,status_msg, parse_mode='HTML')
-
 
