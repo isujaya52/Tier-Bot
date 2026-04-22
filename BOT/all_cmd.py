@@ -11,6 +11,7 @@ season_module = importlib.import_module("BOT.seasonV")
 
 FILE = '/app/BOT/JSON/data.json'
 BACKUP = '/app/BOT/JSON/backup.json'
+START_TIME= time.time()
 
 
 async def read():
