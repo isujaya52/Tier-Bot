@@ -49,7 +49,6 @@ async def save(data):
 # DEF PING
 # Fungsi pembantu untuk mengubah detik menjadi format teks (Hari, Jam, Menit, Detik)
 def get_readable_uptime():
-    global main_loop
     uptime_seconds = int(time.time() - START_TIME)
     days, rem = divmod(uptime_seconds, 86400)
     hours, rem = divmod(rem, 3600)
@@ -80,24 +79,14 @@ def ping():
             self_status = f"✅ {r2.status_code}"
         except Exception as e:
             print(f"[keep-alive] self error: {e}")
-
-        try:
-            if main_loop:
-                # 2. Sisipkan Uptime ke dalam pesan log Telegram
-                uptime_now = get_readable_uptime()
-                msg = (
+        uptime_now = get_readable_uptime()
+        msg = (
                     f"🟢 <b>BOT AKTIF</b>\n\n"
                     f"⏱️ <b>Uptime:</b> <code>{uptime_now}</code>\n"
                     f"🌐 Ping Google: {google_status}\n"
                     f"🖥️ Ping Self: {self_status}"
                 )
-                asyncio.run_coroutine_threadsafe(
-                    bot.send_message(LOGS_ID, msg, parse_mode='HTML'),
-                    main_loop
-                )
-        except Exception as e:
-            print(f"[keep-alive] log error: {e}")
-        
+        return msg
         
 
 
@@ -295,8 +284,9 @@ async def cek_tier(point):
             return tier_name, star
     return "Mythic Immortal", (point - 10600) // 50
 
-@bot.message_handler(commands=['ping'])
-async def pingg():
-    ping()
+@bot.on_message(filters.command("status"))
+async def status_command_handler(client, message):
+    status_msg = await ping()
+    await message.reply_text(status_msg, parse_mode='HTML')
 
 
