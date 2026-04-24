@@ -22,7 +22,7 @@ def run_flask():
     # Gunakan threaded=True agar flask tidak memblokir thread utamanya sendiri
     flask_app.run(host="0.0.0.0", port=5000, threaded=True)
 
-def keep_alive_worker(loop):
+def keep_alive_worker():
     """
     Fungsi ini berjalan di thread terpisah.
     Ia bertugas memerintahkan loop utama untuk menjalankan fungsi ping.
@@ -30,12 +30,10 @@ def keep_alive_worker(loop):
     while True:
         try:
             # Pastikan loop sudah berjalan
-            if loop and loop.is_running():
+            if maim_loop:
                 # Ambil coroutine ping
                 coro = ping() 
                 
-                # Kirim coroutine ke loop utama bot dan dapatkan hasilnya
-                msg = asyncio.run_coroutine_threadsafe(coro, loop).result()
                 
                 # Kirim pesan hasil ping ke Telegram lewat loop utama
                 asyncio.run_coroutine_threadsafe(
