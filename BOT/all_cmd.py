@@ -101,7 +101,7 @@ async def status_command_handler(m):
 
 
 @bot.message_handler(commands=['start', 'help'])
-@error_handle
+@error_handler
 async def start(m):
     data = await read()
     if m.chat.type == "private":
