@@ -177,6 +177,50 @@ async def grouptier(m):
     await bot.edit_message_text(text=result, chat_id=m.chat.id, message_id=msg1.id)
 
 
+@bot.message_handler(commands=['globaltier'])
+@error_handler
+async def globaltier(m):
+    season = importlib.reload(season_module).__season__
+    data = await read()
+    
+    msg1 = await bot.reply_to(m, "<code>Sedang merangkum data global...</code>")
+    all_users = []
+    for chatid in data:
+        for userid, userdata in data[chatid].items():
+            all_users.append({
+                'userid': userid,
+                'point': userdata['point'],
+                'tier': userdata['tier'],
+                'star': userdata['star']
+            })
+            
+    combined_users = {}
+    for user in all_users:
+        uid = user['userid']
+        if uid not in combined_users:
+            combined_users[uid] = user
+        else:
+            combined_users[uid]['point'] += user['point']
+
+    sorted_global = sorted(combined_users.values(), key=lambda x: x['point'], reverse=True)
+    result = f"<b>SEASON {season}</b>\n\n<b>🏆 TOP 10 GLOBAL TIER 🏆</b>\n\n"
+    for i, userdata in enumerate(sorted_global[:10], start=1):
+        userid = userdata['userid']
+        try:
+            nama_user = (await bot.get_chat(int(userid))).first_name
+        except Exception:
+            nama_user = "Anon"
+            
+        point = userdata['point']
+        tier = userdata['tier']
+        star = userdata['star']
+        mention = f"<a href='tg://user?id={userid}'>{nama_user}</a>"
+        stars = f"×{star}⭐" if star != 0 else ""
+        result += f"{i}. {mention} => {point} [ {tier} {stars} ]\n"
+
+    await bot.edit_message_text(text=result, chat_id=m.chat.id, message_id=msg1.id, parse_mode='HTML')
+
+
 @bot.message_handler(commands=['backup'])
 @error_handler
 async def backup_data(m):
