@@ -337,10 +337,10 @@ async def save_point(m):
                 await save(data)
                 
                 # Pengumuman spesial jika mencapai Tier tinggi (Milestone)
-                milestone_tiers = ["Epic", "Legend", "Mythic", "Mythic Immortal"]
+                milestone_tiers = ["Mythic Grading", "Mythic Honor", "Mythic Glory", "Mythic Immortal"]
                 is_milestone = any(mt in new_tier for mt in milestone_tiers)
                 
-                msg = (f"🎉 <b>MILESTONE!</b>\n\n" if is_milestone else "⬆️ <b>LEVEL UP!</b>\n\n")
+                msg = (f"🎉 <b>👑Mythical</b>\n\n" if is_milestone else "⬆️ <b>LEVEL UP!</b>\n\n")
                 msg += (f"Selamat {mention}!\n"
                         f"Kamu naik ke <b>{new_tier} ×{new_star}⭐</b>\n"
                         f"Total poin di grup ini: <code>{point}</code>")
@@ -355,7 +355,7 @@ async def save_point(m):
             nama = (await bot.get_chat(int(userid))).first_name
             mention = f"<a href='tg://user?id={userid}'>{nama}</a>"
             # Cari tahu siapa yang disalip (rank yang sekarang ditempati user)
-            msg_swap = f"🔥 <b>RANK SWAP!</b>\n\n{mention} baru saja naik ke peringkat <b>#{rank_sesudah}</b> Global Leaderboard!"
+            msg_swap = f"🔥 <b>RANK SWAP!</b>\n\n{mention} baru saja naik ke peringkat!\n<b>#{rank_sesudah}</b> Global Leaderboard!\n\nTier: <b>{new_tier} ×{new_star}⭐</b>\nPoint Global: <code>{point}</code>"
             data = await read()
             for chatid in data:
                 try:
