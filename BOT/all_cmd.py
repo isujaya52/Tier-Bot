@@ -188,7 +188,7 @@ async def globaltier(m):
     for chatid in data:
         for userid, userdata in data[chatid].items():
             all_users.append({
-                "userid": userid,
+                "userid": userdata[userid],
                 "point": userdata['point'],
                 "tier": userdata['tier'],
                 "star": userdata['star']
@@ -205,7 +205,7 @@ async def globaltier(m):
     sorted_global = sorted(combined_users.values(), key=lambda x: x['point'], reverse=True)
     result = f"<b>SEASON {season}</b>\n\n<b>🏆 TOP 10 GLOBAL TIER 🏆</b>\n\n"
     for i, userdata in enumerate(sorted_global[:10], start=1):
-        userid = all_user['userid']
+        userid = userdata['userid']
         try:
             nama_user = (await bot.get_chat(int(userid))).first_name
         except Exception:
