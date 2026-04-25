@@ -333,6 +333,7 @@ async def save_point(m):
                 nama = (await bot.get_chat(int(userid))).first_name
                 data[chatid][userid]['tier'] = new_tier
                 data[chatid][userid]['star'] = new_star
+                mention = f"<a href='tg://user?id={userid}'>{nama}</a>"
                 await save(data)
                 
                 # Pengumuman spesial jika mencapai Tier tinggi (Milestone)
@@ -340,7 +341,7 @@ async def save_point(m):
                 is_milestone = any(mt in new_tier for mt in milestone_tiers)
                 
                 msg = (f"🎉 <b>MILESTONE!</b>\n\n" if is_milestone else "⬆️ <b>LEVEL UP!</b>\n\n")
-                msg += (f"Selamat {nama}!\n"
+                msg += (f"Selamat {mention}!\n"
                         f"Kamu naik ke <b>{new_tier} ×{new_star}⭐</b>\n"
                         f"Total poin di grup ini: <code>{point}</code>")
                 
@@ -352,10 +353,17 @@ async def save_point(m):
         # Jika rank naik (angka rank mengecil, misal dari 3 ke 2)
         if rank_sebelum and rank_sesudah < rank_sebelum and rank_sesudah <= 10:
             nama = (await bot.get_chat(int(userid))).first_name
+            mention = f"<a href='tg://user?id={userid}'>{nama}</a>"
             # Cari tahu siapa yang disalip (rank yang sekarang ditempati user)
-            msg_swap = f"🔥 <b>RANK SWAP!</b>\n\n{nama} baru saja naik ke peringkat <b>#{rank_sesudah}</b> Global Leaderboard!"
-            await bot.send_message(m.chat.id, msg_swap, parse_mode='HTML')
-
+            msg_swap = f"🔥 <b>RANK SWAP!</b>\n\n{mention} baru saja naik ke peringkat <b>#{rank_sesudah}</b> Global Leaderboard!"
+            for chatid in data:
+                try:
+                    title = (await bot.get_chat(int(chatid))).title
+                    await bot.send_message(int(chatid), msg_swap)
+                except Exception as e:
+                    pass
+                awat asyncio.sleep(2)
+            
     else:
         # User baru pertama kali chat
         data[chatid][userid] = {"point": 1, "tier": "Classic", "star": 0}
