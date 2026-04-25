@@ -268,15 +268,11 @@ async def gcast(m):
         await asyncio.sleep(2)
     await bot.edit_message_text(text=pesan, chat_id=m.chat.id, message_id=msg.id)
 
-
+"""
 @bot.message_handler(func=lambda message: True)
 async def save_point(m):
     if m.chat.type == "private":
-        return
-    data = await read()
-    userid = str(m.from_user.id)
-    chatid = str(m.chat.id)
-    if chatid not in data:
+   if chatid not in data:
         data[chatid] = {}
         await save(data)
     if userid in data[chatid]:
@@ -302,6 +298,85 @@ async def save_point(m):
     else:
         data[chatid][userid] = {"point": 1, "tier": "Classic", "star": 0}
         await save(data)
+"""
+
+@bot.message_handler(func=lambda message: True)
+async def save_point(m):
+    if m.chat.type == "private":
+        return
+        
+    data = await read()
+    userid = str(m.from_user.id)
+    chatid = str(m.chat.id)
+    
+    if chatid not in data:
+        data[chatid] = {}
+        await save(data)
+
+    if userid in data[chatid]:
+        # --- LOGIKA FITUR 5: Cek Rank Sebelum Point Ditambah ---
+        rank_sebelum, _ = await get_global_rank(userid, data)
+        
+        old_star = data[chatid][userid]['star']
+        point = data[chatid][userid]['point'] + 1
+        new_tier, new_star = await cek_tier(point)
+        
+        data[chatid][userid]['point'] = point
+        await save(data)
+
+        # --- LOGIKA FITUR 4: Milestone Announcement ---
+        if old_star != new_star:
+            # Abaikan jika hanya balik ke bintang 0 di tier yang sama (kecuali Classic)
+            if new_tier != "Classic" and new_star == 0:
+                pass 
+            else:
+                nama = (await bot.get_chat(int(userid))).first_name
+                data[chatid][userid]['tier'] = new_tier
+                data[chatid][userid]['star'] = new_star
+                await save(data)
+                
+                # Pengumuman spesial jika mencapai Tier tinggi (Milestone)
+                milestone_tiers = ["Epic", "Legend", "Mythic", "Mythic Immortal"]
+                is_milestone = any(mt in new_tier for mt in milestone_tiers)
+                
+                msg = (f"🎉 <b>MILESTONE!</b>\n\n" if is_milestone else "⬆️ <b>LEVEL UP!</b>\n\n")
+                msg += (f"Selamat {nama}!\n"
+                        f"Kamu naik ke <b>{new_tier} ×{new_star}⭐</b>\n"
+                        f"Total poin di grup ini: <code>{point}</code>")
+                
+                await bot.reply_to(m, msg, parse_mode='HTML')
+
+        # --- LOGIKA FITUR 5: Leaderboard Swap Notification ---
+        rank_sesudah, _ = await get_global_rank(userid, data)
+        
+        # Jika rank naik (angka rank mengecil, misal dari 3 ke 2)
+        if rank_sebelum and rank_sesudah < rank_sebelum and rank_sesudah <= 10:
+            nama = (await bot.get_chat(int(userid))).first_name
+            # Cari tahu siapa yang disalip (rank yang sekarang ditempati user)
+            msg_swap = f"🔥 <b>RANK SWAP!</b>\n\n{nama} baru saja naik ke peringkat <b>#{rank_sesudah}</b> Global Leaderboard!"
+            await bot.send_message(m.chat.id, msg_swap, parse_mode='HTML')
+
+    else:
+        # User baru pertama kali chat
+        data[chatid][userid] = {"point": 1, "tier": "Classic", "star": 0}
+        await save(data)
+
+
+
+async def get_global_rank(userid, data):
+    combined = {}
+    for chatid in data:
+        for uid, userdata in data[chatid].items():
+            if uid not in combined:
+                combined[uid] = userdata['point']
+            else:
+                combined[uid] += userdata['point']
+    
+    sorted_rank = sorted(combined.items(), key=lambda x: x[1], reverse=True)
+    for index, (uid, point) in enumerate(sorted_rank):
+        if uid == str(userid):
+            return index + 1, point
+    return None, 0
 
 
 async def cek_tier(point):
