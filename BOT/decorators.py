@@ -30,18 +30,18 @@ def admins_only(func):
 
 
 def error_handler(func):
-    @functools.wraps(func)
-    def wrapper(message, *args, **kwargs):
+    @wraps(func)
+    def wrapper(m, *args, **kwargs):
         try:
-            return func(message, *args, **kwargs)
+            return func(m, *args, **kwargs)
         except Exception as e:
             error_details = traceback.format_exc()
             print(f"--- ERROR DETECTED ---\n{error_details}")
             
             log_text = (
                 f"❌ **Error Terdeteksi!**\n\n"
-                f"👤 User: {message.from_user.first_name} (@{message.from_user.username})\n"
-                f"is Command/Text: `{message.text}`\n\n"
+                f"👤 User: {m.from_user.first_name} (@{m.from_user.username})\n"
+                f"is Command/Text: `{m.text}`\n\n"
                 f"⚠️ **Detail Error:**\n`{error_details[-3500:]}`" # Limit karakter agar tidak kena limit Telegram
             )
             
