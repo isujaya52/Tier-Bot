@@ -121,6 +121,7 @@ async def start(m):
 
 
 @bot.message_handler(commands=['mytier'])
+@error_handler
 async def tierku(m):
     season = importlib.reload(season_module).__season__
     data = await read()
@@ -149,6 +150,7 @@ async def tierku(m):
 @bot.message_handler(commands=['grouptier'])
 @bot_admin
 @admins_only
+@error_handler
 async def grouptier(m):
     season = importlib.reload(season_module).__season__
     data = await read()
@@ -176,6 +178,7 @@ async def grouptier(m):
 
 
 @bot.message_handler(commands=['backup'])
+@error_handler
 async def backup_data(m):
     if int(m.from_user.id) not in own:
         return
@@ -187,6 +190,7 @@ async def backup_data(m):
 
 
 @bot.message_handler(commands=['copy'])
+@error_handler
 async def copy_backup(m):
     if int(m.from_user.id) not in own:
         return
@@ -198,6 +202,7 @@ async def copy_backup(m):
 
 
 @bot.message_handler(commands=['gcast'])
+@error_handler
 async def gcast(m):
     if int(m.from_user.id) not in own:
         return
