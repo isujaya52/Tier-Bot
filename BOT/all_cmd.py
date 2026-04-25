@@ -1,6 +1,6 @@
 from config import bot, own
 import json
-from BOT.decorators import admins_only, bot_admin
+from BOT.decorators import admins_only, bot_admin, error_handle
 import asyncio
 import importlib
 import os
@@ -100,6 +100,7 @@ async def status_command_handler(m):
 
 
 @bot.message_handler(commands=['start', 'help'])
+@error_handle
 async def start(m):
     data = await read()
     if m.chat.type == "private":
