@@ -195,12 +195,12 @@ async def globaltier(m):
             })
             
     combined_users = {}
-    for user in all_users:
-        uid = user['userid']
-        if uid not in combined_users:
-            combined_users[uid] = user
-        else:
-            combined_users[uid]['point'] += user['point']
+    for cid in data:
+        for uid in data[cid]:
+            if uid not in combined_users:
+                combined_users[uid] = data[cid][uid].copy()
+            else:
+                combined_users[uid]['point'] += data[cid][uid]['point']
 
     sorted_global = sorted(combined_users.values(), key=lambda x: x['point'], reverse=True)
     result = f"<b>SEASON {season}</b>\n\n<b>🏆 TOP 10 GLOBAL TIER 🏆</b>\n\n"
@@ -349,14 +349,20 @@ async def save_point(m):
                 await bot.reply_to(m, msg, parse_mode='HTML')
 
         # --- LOGIKA FITUR 5: Leaderboard Swap Notification ---
-        rank_sesudah, _ = await get_global_rank(userid, data)
+        rank_sesudah, total_point_global = await get_global_rank(userid, data)
         
         # Jika rank naik (angka rank mengecil, misal dari 3 ke 2)
         if rank_sebelum and rank_sesudah < rank_sebelum and rank_sesudah <= 10:
             nama = (await bot.get_chat(int(userid))).first_name
             mention = f"<a href='tg://user?id={userid}'>{nama}</a>"
             # Cari tahu siapa yang disalip (rank yang sekarang ditempati user)
-            msg_swap = f"🔥 <b>RANK SWAP!</b>\n\n{mention} baru saja naik ke peringkat!\n<b>#{rank_sesudah}</b> Global Leaderboard!\n\nTier: <b>{new_tier} ×{new_star}⭐</b>"
+            msg_swap = (
+                    f"🔥 <b>RANK SWAP!</b>\n\n"
+                    f"{mention} baru saja naik peringkat di Global Leaderboard!\n"
+                    f"Sekarang di peringkat: <b>#{rank_sesudah}</b>\n"
+                    f"Total Poin Global: <code>{total_point_global}</code>\n"
+                    f"Tier Saat Ini: <b>{new_tier} ×{new_star}⭐</b>"
+                )
             data = await read()
             for chatid in data:
                 try:
@@ -371,7 +377,7 @@ async def save_point(m):
         await save(data)
 
 
-
+"""
 async def get_global_rank(userid, data):
     combined = {}
     for chatid in data:
@@ -386,6 +392,26 @@ async def get_global_rank(userid, data):
         if uid == str(userid):
             return index + 1, point
     return None, 0
+"""
+async def get_global_rank(userid, data):
+    combined = {}
+    for chatid in data:
+        for uid, userdata in data[chatid].items():
+            # Pastikan uid adalah string untuk perbandingan yang konsisten
+            u_id = str(uid)
+            if u_id not in combined:
+                combined[u_id] = userdata.get('point', 0)
+            else:
+                combined[u_id] += userdata.get('point', 0)
+    
+    # Urutkan berdasarkan poin tertinggi
+    sorted_rank = sorted(combined.items(), key=lambda x: x[1], reverse=True)
+    
+    for index, (uid, point) in enumerate(sorted_rank):
+        if uid == str(userid):
+            return index + 1, point
+    return None, 0
+
 
 
 async def cek_tier(point):
