@@ -1,6 +1,6 @@
 from config import bot, own
 import json
-from BOT.decorators import admins_only, bot_admin, error_handle
+from BOT.decorators import admins_only, bot_admin, error_handler
 import asyncio
 import importlib
 import os
@@ -92,6 +92,7 @@ def ping():
 @bot.message_handler(commands=['ping'])
 @bot_admin
 @admins_only
+@error_handler
 async def status_command_handler(m):
     status_msg = ping()
     await bot.reply_to(m,status_msg, parse_mode='HTML')
