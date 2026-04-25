@@ -29,13 +29,8 @@ def keep_alive_worker():
     """
     while True:
         try:
-            # Pastikan loop sudah berjalan
-            if maim_loop:
-                # Ambil coroutine ping
-                coro = ping() 
-                
-                
-                # Kirim pesan hasil ping ke Telegram lewat loop utama
+            if main_loop:
+                msg = ping() 
                 asyncio.run_coroutine_threadsafe(
                     bot.send_message(LOGS_ID, msg, parse_mode='HTML'),
                     loop
