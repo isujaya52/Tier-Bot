@@ -212,8 +212,9 @@ async def globaltier(m):
             nama_user = "Anon"
             
         point = userdata['point']
-        tier = userdata['tier']
-        star = userdata['star']
+        #tier = userdata['tier']
+        #star = userdata['star']
+        tier, star = await cek_tier(point)
         mention = f"<a href='tg://user?id={userid}'>{nama_user}</a>"
         stars = f"×{star}⭐" if star != 0 else ""
         result += f"{i}. {mention} => {point} [ {tier} {stars} ]\n"
