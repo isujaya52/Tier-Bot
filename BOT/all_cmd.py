@@ -356,13 +356,13 @@ async def save_point(m):
             mention = f"<a href='tg://user?id={userid}'>{nama}</a>"
             # Cari tahu siapa yang disalip (rank yang sekarang ditempati user)
             msg_swap = f"🔥 <b>RANK SWAP!</b>\n\n{mention} baru saja naik ke peringkat <b>#{rank_sesudah}</b> Global Leaderboard!"
+            data = await read()
             for chatid in data:
                 try:
-                    title = (await bot.get_chat(int(chatid))).title
                     await bot.send_message(int(chatid), msg_swap)
-                except Exception as e:
+                except Exception:
                     pass
-                awat asyncio.sleep(2)
+                await asyncio.sleep(2)
             
     else:
         # User baru pertama kali chat
