@@ -182,45 +182,51 @@ async def grouptier(m):
 async def globaltier(m):
     season = importlib.reload(season_module).__season__
     data = await read()
-    
     msg1 = await bot.reply_to(m, "<code>Sedang merangkum data global...</code>")
-    all_users = []
+
+    # 1. Gabungkan semua poin user dari SEMUA group
+    combined_users = {}
     for chatid in data:
         for userid, userdata in data[chatid].items():
-            all_users.append({
-                "userid": userdata[userid],
-                "point": userdata['point'],
-                "tier": userdata['tier'],
-                "star": userdata['star']
-            })
-            
-    combined_users = {}
-    for cid in data:
-        for uid in data[cid]:
-            if uid not in combined_users:
-                combined_users[uid] = data[cid][uid].copy()
+            if userid not in combined_users:
+                # Simpan sebagai dictionary baru agar tidak merusak data asli
+                combined_users[userid] = {
+                    "userid": userid,
+                    "point": userdata.get('point', 0)
+                }
             else:
-                combined_users[uid]['point'] += data[cid][uid]['point']
+                # Jumlahkan poin jika user ada di beberapa grup
+                combined_users[userid]['point'] += userdata.get('point', 0)
 
+    # 2. Urutkan berdasarkan total poin terbanyak
     sorted_global = sorted(combined_users.values(), key=lambda x: x['point'], reverse=True)
+
     result = f"<b>SEASON {season}</b>\n\n<b>🏆 TOP 10 GLOBAL TIER 🏆</b>\n\n"
+    
+    # 3. Ambil 10 besar dan tampilkan
     for i, userdata in enumerate(sorted_global[:10], start=1):
         userid = userdata['userid']
+        point = userdata['point']
+        
         try:
+            # Ambil nama user terbaru dari Telegram
             nama_user = (await bot.get_chat(int(userid))).first_name
         except Exception:
             nama_user = "Anon"
             
-        point = userdata['point']
-        #tier = userdata['tier']
-        #star = userdata['star']
+        # Hitung tier berdasarkan TOTAL POIN GLOBAL
         tier, star = await cek_tier(point)
+        
         mention = f"<a href='tg://user?id={userid}'>{nama_user}</a>"
         stars = f"×{star}⭐" if star != 0 else ""
         result += f"{i}. {mention} => {point} [ {tier} {stars} ]\n"
 
-    await bot.edit_message_text(text=result, chat_id=m.chat.id, message_id=msg1.id, parse_mode='HTML')
-
+    await bot.edit_message_text(
+        text=result, 
+        chat_id=m.chat.id, 
+        message_id=msg1.id, 
+        parse_mode='HTML'
+    )
 
 @bot.message_handler(commands=['backup'])
 @error_handler
