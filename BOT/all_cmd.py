@@ -355,7 +355,7 @@ async def save_point(m):
             nama = (await bot.get_chat(int(userid))).first_name
             mention = f"<a href='tg://user?id={userid}'>{nama}</a>"
             # Cari tahu siapa yang disalip (rank yang sekarang ditempati user)
-            msg_swap = f"🔥 <b>RANK SWAP!</b>\n\n{mention} baru saja naik ke peringkat!\n<b>#{rank_sesudah}</b> Global Leaderboard!\n\nTier: <b>{new_tier} ×{new_star}⭐</b>\nPoint Global: <code>{point}</code>"
+            msg_swap = f"🔥 <b>RANK SWAP!</b>\n\n{mention} baru saja naik ke peringkat!\n<b>#{rank_sesudah}</b> Global Leaderboard!\n\nTier: <b>{new_tier} ×{new_star}⭐</b>"
             data = await read()
             for chatid in data:
                 try:
