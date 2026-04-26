@@ -6,6 +6,8 @@ import importlib
 import os
 import requests
 import time
+import datetime
+import random
 
 season_module = importlib.import_module("BOT.seasonV")
 
@@ -321,14 +323,23 @@ async def save_point(m):
         await save(data)
 
     if userid in data[chatid]:
-        # --- LOGIKA FITUR 5: Cek Rank Sebelum Point Ditambah ---
         rank_sebelum, _ = await get_global_rank(userid, data)
-        
         old_star = data[chatid][userid]['star']
-        point = data[chatid][userid]['point'] + 1
-        new_tier, new_star = await cek_tier(point)
         
-        data[chatid][userid]['point'] = point
+        bonus = 0
+        if random.random() < 0.01: # Peluang 1%
+            bonus = random.randint(5, 15)
+        
+        # 3. Update Poin (1 poin dasar + bonus jika ada)
+        total_tambah_poin = 1 + bonus
+        data[chatid][userid]['point'] += total_tambah_poin
+        
+        # Ambil total poin terbaru untuk cek tier
+        current_point = data[chatid][userid]['point']
+        new_tier, new_star = await cek_tier(current_point)
+        
+        # 4. Update data waktu
+        data[chatid][userid]['last_chat_time'] = time.time()
         await save(data)
 
         # --- LOGIKA FITUR 4: Milestone Announcement ---
@@ -382,23 +393,6 @@ async def save_point(m):
         data[chatid][userid] = {"point": 1, "tier": "Classic", "star": 0}
         await save(data)
 
-
-"""
-async def get_global_rank(userid, data):
-    combined = {}
-    for chatid in data:
-        for uid, userdata in data[chatid].items():
-            if uid not in combined:
-                combined[uid] = userdata['point']
-            else:
-                combined[uid] += userdata['point']
-    
-    sorted_rank = sorted(combined.items(), key=lambda x: x[1], reverse=True)
-    for index, (uid, point) in enumerate(sorted_rank):
-        if uid == str(userid):
-            return index + 1, point
-    return None, 0
-"""
 async def get_global_rank(userid, data):
     combined = {}
     for chatid in data:
