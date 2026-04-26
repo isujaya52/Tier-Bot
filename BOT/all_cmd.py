@@ -336,8 +336,8 @@ async def save_point(m):
         data[chatid][userid]['point'] += total_tambah_poin
         
         # Ambil total poin terbaru untuk cek tier
-        current_point = data[chatid][userid]['point']
-        new_tier, new_star = await cek_tier(current_point)
+        point = data[chatid][userid]['point']
+        new_tier, new_star = await cek_tier(point)
         
         # 4. Update data waktu
         data[chatid][userid]['last_chat_time'] = time.time()
