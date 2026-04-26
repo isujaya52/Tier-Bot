@@ -329,6 +329,7 @@ async def save_point(m):
         bonus = 0
         if random.random() < 0.01: # Peluang 1%
             bonus = random.randint(5, 15)
+            await bot.reply_to(m, f"🍀 **HOKI!** Kamu dapat bonus **{bonus}** poin dari langit!")
         
         # 3. Update Poin (1 poin dasar + bonus jika ada)
         total_tambah_poin = 1 + bonus
