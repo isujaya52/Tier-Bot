@@ -1,6 +1,6 @@
 from config import bot, own
 import json
-from BOT.decorators import admins_only, bot_admin, error_handler
+from BOT.decorators import admins_only, bot_admin, error_handler, cmd_filter
 import asyncio
 import importlib
 import os
