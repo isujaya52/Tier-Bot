@@ -461,7 +461,7 @@ async def cek_tier(point):
                 next_tier_name = tiers[i+1][1]
             else:
                 next_tier_name = "Max Rank"
-            return tier_name, star, min_point, max_point
+            return tier_name, star, min_point, max_point, next_tier_name
     return "Mythic Immortal", (point - 10600) // 50, 10600, float('inf')
 
 
