@@ -465,7 +465,7 @@ async def cek_tier(point):
     return "Mythic Immortal", (point - 10600) // 50, 10600, float('inf')
 
 
-def make_progress_bar(point, min_p, max_p):
+def make_progress_bar(point, min_p, max_p, next_tier_name):
     if max_p == float('inf'): # Untuk tier tertinggi (Immortal)
         return "Rank Tertinggi 🔥"
     
