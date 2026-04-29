@@ -139,8 +139,8 @@ async def tierku(m):
     tier = data[chatid][userid]['tier']
     star = data[chatid][userid]['star']
     stars = f"×{star}⭐" if star != 0 else ""
-    _, _, min_p, max_p = await cek_tier(point)
-    p_bar = make_progress_bar(point, min_p, max_p)
+    _, _, min_p, max_p, next_tier = await cek_tier(point)
+    p_bar = make_progress_bar(point, min_p, max_p, next_tier)
     msg = (
         f"<b>SEASON {season}</b>\n\n"
         f"Halo {nama},\n\n"
@@ -220,7 +220,7 @@ async def globaltier(m):
             nama_user = "Anon"
             
         # Hitung tier berdasarkan TOTAL POIN GLOBAL
-        tier, star, _, _ = await cek_tier(point)
+        tier, star, _, _, _ = await cek_tier(point)
         
         mention = f"<a href='tg://user?id={userid}'>{nama_user}</a>"
         stars = f"×{star}⭐" if star != 0 else ""
@@ -340,7 +340,7 @@ async def save_point(m):
         
         # Ambil total poin terbaru untuk cek tier
         point = data[chatid][userid]['point']
-        new_tier, new_star, _, _ = await cek_tier(point)
+        new_tier, new_star, _, _, _= await cek_tier(point)
         
         # 4. Update data waktu
         data[chatid][userid]['last_chat_time'] = time.time()
@@ -455,6 +455,11 @@ async def cek_tier(point):
     for max_point, tier_name, min_point in tiers:
         if point <= max_point:
             star = (point - min_point) // 50
+
+            if i + 1 < len(tiers):
+                next_tier_name = tiers[i+1][1]
+            else:
+                next_tier_name = "Max Rank"
             return tier_name, star, min_point, max_point
     return "Mythic Immortal", (point - 10600) // 50, 10600, float('inf')
 
@@ -471,4 +476,4 @@ def make_progress_bar(point, min_p, max_p):
     # Buat visual bar (10 kotak)
     filled_len = int(10 * percentage)
     bar = '█' * filled_len + '░' * (10 - filled_len)
-    return f"<code>{bar}</code> {int(percentage * 100)}%"
+    return f"<code>{bar}</code> {int(percentage * 100)}% => <b>{next_tier_name}</b>"
