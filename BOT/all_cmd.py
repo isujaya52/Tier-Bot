@@ -453,7 +453,7 @@ async def cek_tier(point):
         (float('inf'), "Mythic Immortal", 10600),
     ]
     for i range(len(tiers)):
-    max_point, tier_name, min_point = tiers[i]
+        max_point, tier_name, min_point = tiers[i]
         if point <= max_point:
             star = (point - min_point) // 50
 
