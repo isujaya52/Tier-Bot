@@ -138,12 +138,15 @@ async def tierku(m):
     point = data[chatid][userid]['point']
     tier = data[chatid][userid]['tier']
     star = data[chatid][userid]['star']
-    stars = f"×{star}⭐" if star != 0 else ""
+    stars = f"×{star}⭐" if star != 0 else ", 
+    _, _, min_p, max_p = await cek_tier(point)
+    p_bar = make_progress_bar(point, min_p, max_p)
     msg = (
         f"<b>SEASON {season}</b>\n\n"
         f"Halo {nama},\n\n"
         f"Tier kamu di group {group} saat ini adalah <b>[ {tier} {stars} ]</b> "
-        f"dengan total pesan terkirim: <b>{point}</b> Pesan.\n\n"
+        f"dengan total pesan terkirim: <b>{point}</b> Pesan.\n"
+        f"Progress: {p_bar}\n\n"
         f"Ayo tingkatkan aktifitas kamu di grup!"
     )
     await bot.reply_to(m, msg)
@@ -452,6 +455,20 @@ async def cek_tier(point):
     for max_point, tier_name, min_point in tiers:
         if point <= max_point:
             star = (point - min_point) // 50
-            return tier_name, star
-    return "Mythic Immortal", (point - 10600) // 50
+            return tier_name, star, min_point, max_point
+    return "Mythic Immortal", (point - 10600) // 50, 10600, float('inf')
 
+
+def make_progress_bar(point, min_p, max_p):
+    if max_p == float('inf'): # Untuk tier tertinggi (Immortal)
+        return "Rank Tertinggi 🔥"
+    
+    # Hitung persentase
+    total_needed = max_p - min_p
+    current_progress = point - min_p
+    percentage = min(current_progress / total_needed, 1.0)
+    
+    # Buat visual bar (10 kotak)
+    filled_len = int(10 * percentage)
+    bar = '█' * filled_len + '░' * (10 - filled_len)
+    return f"<code>{bar}</code> {int(percentage * 100)}%"
