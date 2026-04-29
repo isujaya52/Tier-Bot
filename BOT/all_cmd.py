@@ -220,7 +220,7 @@ async def globaltier(m):
             nama_user = "Anon"
             
         # Hitung tier berdasarkan TOTAL POIN GLOBAL
-        tier, star = await cek_tier(point)
+        tier, star, _, _ = await cek_tier(point)
         
         mention = f"<a href='tg://user?id={userid}'>{nama_user}</a>"
         stars = f"×{star}⭐" if star != 0 else ""
@@ -340,7 +340,7 @@ async def save_point(m):
         
         # Ambil total poin terbaru untuk cek tier
         point = data[chatid][userid]['point']
-        new_tier, new_star = await cek_tier(point)
+        new_tier, new_star, _, _ = await cek_tier(point)
         
         # 4. Update data waktu
         data[chatid][userid]['last_chat_time'] = time.time()
