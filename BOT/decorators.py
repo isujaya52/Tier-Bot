@@ -28,6 +28,20 @@ def admins_only(func):
         return await bot.reply_to(m, "Anda harus menjadi admin untuk melakukan ini.")
     return wrapper
 
+def cmd_filter(func):
+    @wraps(func)
+    async def wrapper(m, *args, **kwargs):
+        bot_info = await bot.get_me()
+        bot_username = bot_info.username
+        
+        text = m.text.split()[0] if m.text else ""
+        
+        if "@" in text and f"@{bot_username}" not in text:
+            return 
+            
+        return await func(m, *args, **kwargs)
+    return wrapper
+
 
 def error_handler(func):
     @wraps(func)
