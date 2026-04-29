@@ -138,7 +138,7 @@ async def tierku(m):
     point = data[chatid][userid]['point']
     tier = data[chatid][userid]['tier']
     star = data[chatid][userid]['star']
-    stars = f"×{star}⭐" if star != 0 else ", 
+    stars = f"×{star}⭐" if star != 0 else "
     _, _, min_p, max_p = await cek_tier(point)
     p_bar = make_progress_bar(point, min_p, max_p)
     msg = (
