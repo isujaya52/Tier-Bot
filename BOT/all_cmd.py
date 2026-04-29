@@ -94,6 +94,7 @@ def ping():
 @bot.message_handler(commands=['ping'])
 @bot_admin
 @admins_only
+@cmd_filter
 @error_handler
 async def status_command_handler(m):
     status_msg = ping()
@@ -103,6 +104,7 @@ async def status_command_handler(m):
 
 
 @bot.message_handler(commands=['start', 'help'])
+@cmd_filter
 @error_handler
 async def start(m):
     data = await read()
@@ -123,6 +125,7 @@ async def start(m):
 
 
 @bot.message_handler(commands=['mytier'])
+@cmd_filter
 @error_handler
 async def tierku(m):
     season = importlib.reload(season_module).__season__
@@ -155,6 +158,7 @@ async def tierku(m):
 @bot.message_handler(commands=['grouptier'])
 @bot_admin
 @admins_only
+@cmd_filter
 @error_handler
 async def grouptier(m):
     season = importlib.reload(season_module).__season__
@@ -183,6 +187,7 @@ async def grouptier(m):
 
 
 @bot.message_handler(commands=['globaltier'])
+@cmd_filter
 @error_handler
 async def globaltier(m):
     season = importlib.reload(season_module).__season__
